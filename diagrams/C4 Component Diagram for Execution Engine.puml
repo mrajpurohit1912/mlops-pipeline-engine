@@ -1,0 +1,28 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Component Diagram for Execution Engine
+
+Container(artifacts, "Artifact Store", "MLflow/S3", "Saves models/reports")
+Container(meatadata_db, "Metadata store", "PostgreSQL / SQLite", "saves the current status of the execution engine")
+
+
+Container_Boundary(exec_engine, "Execution Engine") {
+    Component(data_loader, "Universal Ingestor", "Pandas/Dask", "Handles CSV, SQL, JSON ,API, dataset from HuggingFace,Keggal,pytorch database or any other online datasource  ")
+    Component(val_engine, "Data Quality Guard", "Great Expectations or Manual customized check", "Checks for nulls/datatype check/Range & constraint checks/schema validation/drift")
+    Component(eda_tool, "Auto-EDA Engine", "Sweetviz/ydata-profiling / Manual custom EDA based on config input by user", "Generates reports")
+    Component(feat_factory, "Feature Factory", "Custom Logic", "Transforms data based on type")
+    Component(model_factory, "Model Trainer", "Scikit-Learn/XGBoost/Pytorch/Tensorflow/Keras", "Trains multiple candidates")
+    Component(performance_evalutor, "Result Evaluator", "Metrics Evaluator / Performance Evaluator", "Evalutes performance of different models and selects the best model as per custom logic")
+
+}
+
+Rel(data_loader, val_engine, "Passes raw data")
+Rel(val_engine, eda_tool, "Passes clean data")
+Rel(eda_tool, feat_factory, "Triggers transformation")
+Rel(feat_factory, model_factory, "Passes feature matrix")
+Rel(model_factory, artifacts, "Logs metrics/models")
+Rel(model_factory,performance_evalutor,"Results of training")
+Rel(performance_evalutor, artifacts, "Logs metrics/models")
+Rel(exec_engine,meatadata_db,"Current Status")
+@enduml

@@ -1,0 +1,19 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Component Diagram for Configuration Engine
+
+Container(orchestrator, "Pipeline Orchestrator", "Python", "Receives the execution plan")
+
+Container_Boundary(config_engine, "Configuration Engine") {
+    Component(yaml_parser, "YAML/JSON Parser", "PyYaml/JSON", "Reads raw configuration files")
+    Component(schema_validator, "Schema Validator", "Pydantic", "Validates types, ranges, and mandatory fields")
+    Component(env_manager, "Environment Resolver", "Dotenv", "Injects secrets and cloud credentials")
+    Component(dag_generator, "DAG Generator", "Logic", "Maps linear config to a dependency graph")
+}
+
+Rel(yaml_parser, schema_validator, "Sends raw dict")
+Rel(schema_validator, env_manager, "Validates structure")
+Rel(env_manager, dag_generator, "Resolves paths/secrets")
+Rel(dag_generator, orchestrator, "Passes Execution Plan")
+@enduml

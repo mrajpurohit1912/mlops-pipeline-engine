@@ -1,0 +1,31 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Container Diagram for Dynamic ML/AI Ops Pipeline
+
+Person(ml_engineer, "ML Engineer", "Defines configs and monitors runs")
+System_Ext(data_sources, "External Data Sources", "S3, SQL, APIs, etc.")
+
+System_Boundary(platform, "Dynamic ML/AI Platform") {
+    Container(config_loader, "Configuration Engine", "Python/Pydantic", "Parses YAML/JSON and validates pipeline instructions")
+    Container(orchestrator, "Pipeline Orchestrator", "ZenML / Airflow", "Manages the DAG and task dependencies")
+    Container(compute_engine, "Execution Engine", "Python / Scikit-Learn / PyTorch", "Performs Data Cleaning,Data Validation, EDA, and Model Training")
+    ContainerDb(metadata_db, "Metadata Store", "PostgreSQL / SQLite", "Stores run history, statuses, and experiment parameters")
+    Container(artifact_manager, "Artifact & Model Manager", "MLflow", "Versions models, datasets, and evaluation metrics")
+    Container(reporting_gen, "Reporting Engine", "Jinja2 / Plotly", "Generates HTML/PDF summaries and EDA visuals")
+}
+
+System_Ext(monitoring, "Monitoring System", "Logs and Alerts")
+
+Rel(ml_engineer, config_loader, "Submits YAML config")
+Rel(config_loader, orchestrator, "Provides validated instructions")
+Rel(orchestrator, compute_engine, "Triggers tasks")
+Rel(compute_engine, data_sources, "Fetches raw data")
+Rel(compute_engine, artifact_manager, "Persists models and snapshots")
+Rel(compute_engine, metadata_db, "Logs task status")
+Rel(orchestrator, metadata_db, "Logs task status")
+Rel(artifact_manager, reporting_gen, "Provides data for reports")
+Rel(reporting_gen, ml_engineer, "Delivers PDF/HTML reports")
+Rel(platform, monitoring, "Sends telemetry")    
+
+@enduml

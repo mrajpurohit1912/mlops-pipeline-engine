@@ -1,0 +1,82 @@
+@startuml
+title Sequence Diagram - Single Pipeline Execution
+
+actor "ML Engineer / Data Scientist / Adminstrator" as user
+participant "Configuration Engine" as config 
+participant "Paritcipant Engine" as orchestrator
+participant "Execution Engine" as exec
+database "Metadata Store" as meta
+participant "Artifact Store" as artifacts
+participant "Reporting Engine" as reporting
+
+== Pipeline Submission ==
+autonumber
+user -> config : Submit yaml/JSON pipeline config
+config -> config : Parse & Validate config and env
+config -> user : Config Validated (202 Accepted)
+config -> orchestrator : Send Valdated Execution Plan (DAG)
+
+== Pipeline Initialization ==
+autonumber 5
+orchestrator -> meta : Create Pipeline run entry (Running)
+orchestrator -> orchestrator : Build Execution DAG
+
+== Task Execution ==
+autonumber 7
+orchestrator -> exec : Trigger Task: Ingest(source_params)
+exec -> exec : Fetch Data (local,API,Cloud,Public datasources)
+exec -> meta : Update Task Status(INGESTION_SUCCESS)
+exec -> orchestrator : Update Task Status(INGESTION_SUCCESS)
+
+orchestrator -> exec : Trigger Task: Validate(data)
+exec -> exec :  Quality Check (Custom Logic,Pandera,Great Expectation)
+exec -> meta : Update Task Status(VALIDATION_SUCCESS)
+exec -> orchestrator : Update Task Status(VALIDATION_SUCCESS)
+
+orchestrator -> exec : Trigger Task: EDA(data)
+exec -> exec :  Generate EDA Report / Profiling (Custom Logic,or a BASIC EDA Template)
+exec -> artifacts : Update EDA result snapshot
+exec -> meta : Update Task Status(EDA_SUCCESS)
+exec -> orchestrator : Update Task Status(EDA_SUCCESS)
+
+
+orchestrator -> exec : Trigger Task: Feature Engineering(data)
+exec -> exec :  Clean & Transform features (Data Agnostic) (Custom Logic,Pandera,Great Expectation)
+exec -> artifacts : Update FE result snapshot
+exec -> meta : Update Task Status(FE_SUCCESS)
+exec -> orchestrator : Update Task Status(FE_SUCCESS)
+
+
+group #LightBlue "Model Training Loop [for each model in config]"
+orchestrator -> exec : Trigger Task: Training(model_params)
+exec -> exec :  Hyperparameter Tuning
+exec -> artifacts : Store Model,Metrics,and Parameters
+exec -> meta : Update Task Status(TRAINING_SUCCESS)
+exec -> orchestrator : Update Task Status(TRAINING_SUCCESS)
+end
+
+orchestrator -> exec : Trigger Task:  Evaluate & Select best model(data)
+exec -> exec : Rank & Tag Champion
+exec -> artifacts : Update Model,Metrics and parameter of best model
+exec -> meta : Update Task Status(EVALUATION_SUCCESS)
+exec -> orchestrator : Update Task Status(EVALUATION_SUCCESS)
+
+orchestrator -> reporting : Trigger Task: Generate Final Run Report
+reporting -> artifacts : Fetch metrics & Plot
+reporting -> user : Send Final Report(HTML / PDF or anything else as per industry standard)
+reporting -> meta : Update Status(Run Complete)
+reporting -> orchestrator : Notify(Run Complete)
+
+
+== Failure Handling ==
+alt Any task fails 
+    exec -> orchestrator : Report failure
+    orchestrator -> meta : Update status FAILED
+    orchestrator -> orchestrator : Apply retry policy
+    alt Retry succeeds
+        orchestrator -> exec : Re-trigger task
+    else Retry exhausted
+        orchestrator -> user : Notify failure
+    end
+end
+@enduml

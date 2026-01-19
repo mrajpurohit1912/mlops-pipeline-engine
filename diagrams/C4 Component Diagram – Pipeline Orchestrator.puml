@@ -1,0 +1,19 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title Component Diagram for Pipeline Orchestrator
+
+Container(compute, "Execution Engine", "Python", "Runs the actual ML tasks")
+ContainerDb(meta_db, "Metadata Store", "Postgres", "Saves run status")
+
+Container_Boundary(orchestrator, "Pipeline Orchestrator") {
+    Component(task_scheduler, "Task Scheduler", "ZenML/Airflow", "Manages queue of tasks")
+    Component(state_manager, "State Manager", "Logic", "Tracks 'Success', 'Failed', 'Running'")
+    Component(retry_handler, "Retry & Recovery", "Logic", "Handles exponential backoff on failure")
+}
+
+Rel(task_scheduler, compute, "Triggers specific task")
+Rel(compute, state_manager, "Reports completion/failure")
+Rel(state_manager, meta_db, "Persists state")
+Rel(state_manager, retry_handler, "Triggers retry on failure")
+@enduml

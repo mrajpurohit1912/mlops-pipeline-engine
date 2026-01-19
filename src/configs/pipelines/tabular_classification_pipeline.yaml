@@ -1,0 +1,35 @@
+pipeline:
+  name: titanic_prediction
+  type: tabular_classification_pipeline
+
+environment: prod
+
+data:
+  source:
+    name: titanic
+    type: csv
+    path: data/raw/csv/titanic.csv
+  
+  features:
+    include: all
+    feature_config_path: configs/features/tabular_features.yaml
+    target: survived
+
+validation:
+  enabled: true
+
+  #missing value validation
+  missing_value_validation_percent: 20
+  
+  #data type validation
+  data_type_validation:
+    columns:
+      col1:
+        name: name1
+        dtype: int
+      col2:
+        name: name2
+        dtype: str
+
+
+  # next will be schema validation(cols exists or not ,cols have correct name or not)

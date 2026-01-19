@@ -1,0 +1,27 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title C4 Context Diagram for Dynamic ML/AI ops pipeline
+
+Person(ml_engineer,"ML Engineer / Data Scientist / Administrator","This person is going to operate this whole project end to end e.g Myself")
+Person(ci_cd, "CI/CD System", "Triggers automated pipeline executions")
+
+
+System(ml_ai_ops,"Dynamic ML/AI platform","Config-driven,dataset-agnositic ML platform that ingest data,validate data,perform data cleaning,perform exploratory data analysis,feature engineering,trains multiple models,selects best models and manage artifacts and reports")
+
+
+System_Ext(data_sources,"External Data Sources","Local Files,Databases,APIs,Cloud Storage,Publicly available datasources HuggingFace,Kaggle,Pytorch,etc")
+System_Ext(model_registry,"Model Registry","Stores Versioned models and metadata")
+System_Ext(monitoring,"Monitoring and logging system","Centralized logs,metrics,and alerts")
+System_Ext(identity,"Secrets & Identity Manager","Manages credentials,secrets and access control")
+
+
+Rel(ml_engineer,ml_ai_ops,"Define pipeline configs and models, Review EDA reports and model artifacts")
+Rel(ci_cd, ml_ai_ops, "Triggers automated pipeline runs")
+
+
+Rel(ml_ai_ops, data_sources, "Ingests datasets from")
+Rel(ml_ai_ops, model_registry, "Registers and retrieves models from")
+Rel(ml_ai_ops, monitoring, "Emits logs and metrics to")
+Rel(ml_ai_ops, identity, "Retrieves secrets and credentials from")
+@enduml
