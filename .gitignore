@@ -11,3 +11,12 @@ wheels/
 data
 
 notebooks
+
+app.log
+
+
+*.log
+
+mlflow.db
+
+take
