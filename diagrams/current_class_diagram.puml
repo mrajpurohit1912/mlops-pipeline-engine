@@ -1,0 +1,165 @@
+@startuml
+class main {
+    +  yaml_parser
+    +  schema_validator
+    +  dag_generator
+    +  configuration_engine
+    +  orchestrator
+    +  tabular_classification_pipeline
+
+    + run ()
+}
+
+
+class TabularClassificationPipeline {
+    + configuration_engine
+    + orchestrator
+
+    + run()
+}   
+
+
+class ConfigurationEngine {
+    + yaml_parser
+    + schema_validator
+    + dag_generator
+
+    + build_execution_plan()
+}
+
+class PipelineOrchestrator {
+    run() # executes task one by one
+}
+
+
+class DAGGenerator {
+    + generate() # returns DAG Plan List[TaskBase]
+}
+
+class DataIngestorFactory {
+    + get_ingestor()
+}
+
+class DataValidatorFactory {
+    + get_validator()
+}
+
+abstract class TaskBase {
+    + run () #abstract method
+}
+
+
+Interface CSVIngestorTask  {
+    + run () # implementation of abstract method TaskBase.run()
+}
+
+Interface MissingValueValidatorTask  {
+    + run ()  # implementation of abstract method TaskBase.run()
+}
+
+Interface DataTypeValidatorTask  {
+    + run ()  # implementation of abstract method TaskBase.run()
+}
+
+abstract class ParserBase {
+    + parse() # abstract method
+}
+
+Interface YAMLParser  {
+    + parse() # implementation of abstract method ParserBase.parse()
+}
+
+class MLConfig {
+    # it is a pydantic model class
+}
+
+class SchemaValidator {
+    + validate() # validates MLConfig instance  
+}
+
+
+main --> TabularClassificationPipeline : uses
+
+TabularClassificationPipeline --> ConfigurationEngine : uses using dependency injection
+TabularClassificationPipeline --> PipelineOrchestrator : uses using dependency injection
+
+DAGGenerator --> TaskBase : uses
+DAGGenerator --> DataIngestorFactory : uses
+DAGGenerator --> DataValidatorFactory : uses    
+
+ConfigurationEngine *-- DAGGenerator    : Part of # DAGGenerator is part of ConfigurationEngine
+
+
+TaskBase <|.. CSVIngestorTask
+TaskBase <|.. MissingValueValidatorTask
+TaskBase <|.. DataTypeValidatorTask
+
+ParserBase <|.. YAMLParser
+
+ConfigurationEngine *-- YAMLParser : Part of # YAMLParser is part of ConfigurationEngine
+
+ConfigurationEngine *-- SchemaValidator : Part of # SchemaValidator is part of ConfigurationEngine
+
+SchemaValidator --> MLConfig : validates # validates MLConfig instance
+
+DataValidatorFactory ..> TaskBase : <<creates>> # returns task instances
+DataIngestorFactory ..> TaskBase : <<creates>> # returns task instances
+
+PipelineOrchestrator ..> TaskBase : <<executes>> # executes task one by one
+@enduml
+
+
+
+' @startuml
+' skinparam theme plain
+
+' ' Core Abstractions
+' interface TaskBase {
+'     + run(context: PipelineContext)
+' }
+
+' class PipelineContext {
+'     + data: Map<String, DataFrame>
+'     + set_artifact(key, value)
+' }
+
+' ' Factories (Strategy Pattern)
+' interface TaskFactory {
+'     + create_task(config: Dict): TaskBase
+' }
+
+' class DataIngestorFactory implements TaskFactory
+' class DataValidatorFactory implements TaskFactory
+
+' ' Configuration Engine (Facade Pattern)
+' class ConfigurationEngine {
+'     - yaml_parser
+'     - schema_validator
+'     - dag_generator
+'     + build_execution_plan(): List<TaskBase>
+' }
+
+' ConfigurationEngine *-- DAGGenerator
+' DAGGenerator o-- TaskFactory : uses list of
+
+' ' Orchestrator (Command Pattern)
+' class PipelineOrchestrator {
+'     + run(plan: List<TaskBase>)
+' }
+
+' ' The Main Entry Point (The "Glue")
+' class TabularClassificationPipeline {
+'     - config_engine: ConfigurationEngine
+'     - orchestrator: PipelineOrchestrator
+'     + run()
+' }
+
+' ' Concrete Implementations
+' class CSVIngestorTask implements TaskBase
+' class MissingValueValidatorTask implements TaskBase
+
+' ' Relationships
+' TabularClassificationPipeline o-- ConfigurationEngine
+' TabularClassificationPipeline o-- PipelineOrchestrator
+' PipelineOrchestrator ..> TaskBase : executes
+' @enduml

@@ -1,0 +1,40 @@
+# data_ingestion:
+#   enabled: true
+#   stage_name: "data_ingestion"
+#   tasks:
+#     data_ingestor:
+#       enabled: true
+#       task_name: "csv_data_ingestor"
+
+# data_validation:
+#   enabled: true
+#   stage_name: "data_validation"
+#   tasks:
+#     missing_value_validator:
+#       enabled: true
+#       task_name: "missing_value_validator"
+#     data_type_validator:
+#       enabled: true
+#       task_name: "data_type_validator"
+
+
+# for task it should refer to the input yaml but then you need to decide the schema for each task in input yaml
+
+
+stages:
+  - enabled: true
+    stage_name: "data_ingestion"
+    tasks:
+      - enabled: true
+        task_name: "csv_data_ingestor"
+        params: {}
+
+  - enabled: true
+    stage_name: "data_validation"
+    tasks:
+      - enabled: true
+        task_name: "missing_value_validator"
+        params: {}
+      - enabled: true
+        task_name: "data_type_validator"
+        params: {}

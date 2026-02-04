@@ -18,18 +18,22 @@
 
 
 from pathlib import Path
+
 from configuration.configuration_engine import ConfigurationEngine
-from configuration.models.config_model import MLConfig
 from orchestrator.orchestrator import PipelineOrchestrator
 
 
-
 class TabularClassificationPipeline:
-    def __init__(self,configuration_engine:ConfigurationEngine,orchestrator:PipelineOrchestrator):
+    def __init__(
+        self,
+        configuration_engine: ConfigurationEngine,
+        orchestrator: PipelineOrchestrator,
+    ):
         self.configuration_engine = configuration_engine
-        self.orchestrator = orchestrator 
+        self.orchestrator = orchestrator
 
-    def run(self,config_path:Path):
-        complete_plan = self.configuration_engine.build_execution_plan(config_path)
+    def run(self, input_config_path: Path,default_config_path: Path ):
+        complete_plan = self.configuration_engine.build_execution_plan(input_config_path,default_config_path)
 
-        self.orchestrator.run(complete_plan)
+        context_result = self.orchestrator.run(complete_plan)
+        return context_result

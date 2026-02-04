@@ -5,13 +5,84 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "mlflow>=3.8.1",
     "pandas>=2.3.3",
+    "polars>=1.37.1",
     "pydantic>=2.12.5",
     "pyprojroot>=0.3.0",
+    "python-json-logger>=4.0.0",
     "pyyaml>=6.0.3",
+    "uuid>=1.30",
 ]
 
 [dependency-groups]
 dev = [
+    "basedpyright>=1.37.3",
+    "ipykernel>=7.1.0",
     "ruff>=0.14.13",
 ]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+exclude = [
+  ".venv",
+  "dist",
+  "build",
+  "__pycache__",
+  "mlruns",
+]
+
+[tool.ruff.lint]
+
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes (real bugs)
+  "I",   # import sorting
+  "B",   # flake8-bugbear (logic bugs)
+  "S",   # bandit rules
+  "UP",  # pyupgrade (modern python)
+  "C4",  # flake8-comprehensions
+  "SIM", # simplify
+]
+
+ignore = [
+  "E501", # line length (formatter handles this)
+]
+
+
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+
+[tool.basedpyright]
+# 1. Scope & Environment
+include = ["src"]
+exclude = [
+    "**/node_modules",
+    "**/__pycache__",
+    ".venv",
+    "mlruns"
+]
+pythonVersion = "3.13"
+pythonPlatform = "All" # Assumes code must run on any OS (Standard for MLOps)
+typeCheckingMode = "recommended" # Enables strict rules but reports minor ones as warnings
+
+# 2. Strictness Overrides (Enterprise "Strict" Layer)
+# These settings go beyond standard Pyright to ensure zero "Unknown" types
+reportAny = "error"                # Ban usages of the 'Any' type
+reportExplicitAny = "error"        # Ban using 'Any' in type annotations
+reportUnreachable = "error"        # Treat unreachable code as a hard error
+reportIgnoreCommentWithoutRule = "error" # Force # pyright: ignore[rule-name]
+
+# 3. Handling Un-typed Dependencies
+# Since you use libraries like PyYAML which may have poor type stubs
+reportMissingTypeStubs = "warning" # Warn instead of error for missing library types
+useLibraryCodeForTypes = true      # Try to infer types from library source if stubs missing
+
+# 4. CI/CD Integration
+failOnWarnings = true

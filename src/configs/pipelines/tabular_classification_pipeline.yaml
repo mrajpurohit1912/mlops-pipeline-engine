@@ -1,34 +1,60 @@
-pipeline:
-  name: titanic_prediction
-  type: tabular_classification_pipeline
 
 environment: prod
 
 data:
-  source:
-    name: titanic
-    type: csv
-    path: data/raw/csv/titanic.csv
-  
-  features:
-    include: all
-    feature_config_path: configs/features/tabular_features.yaml
-    target: survived
+  #task_name: csv_data_ingestor
+  name: titanic
+  type: csv
+  path: data/raw/csv/titanic.csv
+  include: all
+  target_column: survived
 
-validation:
-  enabled: true
+data_validation:
 
   #missing value validation
-  missing_value_validation_percent: 20
+  missing_value_validation:
+    #task_name: missing_value_validator
+    missing_percentage: 99
   
   #data type validation
   data_type_validation:
+    #task_name: data_type_validator
     columns:
       col1:
-        name: name1
+        name: PassengerId
         dtype: int
       col2:
-        name: name2
+        name: Survived
+        dtype: int
+      col3:
+        name: Pclass
+        dtype: int
+      col4:
+        name: Name
+        dtype: int
+      col5:
+        name: Sex
+        dtype: str
+      col6:
+        name: Age
+        dtype: float
+      col7:
+        name: SibSp
+        dtype: int
+      col8:
+        name: Parch
+        dtype: int
+      col9:
+        name: Ticket
+        dtype: str
+      col10:
+        name: Fare
+        dtype: float
+      col11:
+        name: Cabin
+        dtype: str
+      col12:
+        name: Embarked
         dtype: str
 
 

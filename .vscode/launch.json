@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Tabular Classification Pipeline",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/main.py",
+      "args": [
+        "src/configs/pipelines/tabular_classification_pipeline.yaml",
+        "/home/mahavir/code/python_projects/dynamic_mlops_new/src/configs/pipelines/base.yaml"
+      ],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

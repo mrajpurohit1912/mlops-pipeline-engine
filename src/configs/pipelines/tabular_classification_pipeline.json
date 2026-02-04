@@ -1,0 +1,79 @@
+{
+  "pipeline": {
+    "enabled": true,
+    "name": "titanic_prediction",
+    "type": "tabular_classification_pipeline",
+    "environment": "prod"
+  },
+  "data": {
+    "enabled": true,
+    "source": {
+      "name": "titanic",
+      "type": "csv",
+      "path": "data/raw/csv/titanic.csv"
+    },
+    "features": {
+      "include": "all",
+      "feature_config_path": "configs/features/tabular_features.yaml",
+      "target": "survived"
+    }
+  },
+  "validation": {
+    "enabled": true,
+    "missing_value_validation": {
+      "missing_percentage": 99
+    },
+    "data_type_validation": {
+      "columns": {
+        "col1": {
+          "name": "PassengerId",
+          "dtype": "int"
+        },
+        "col2": {
+          "name": "Survived",
+          "dtype": "int"
+        },
+        "col3": {
+          "name": "Pclass",
+          "dtype": "int"
+        },
+        "col4": {
+          "name": "Name",
+          "dtype": "int"
+        },
+        "col5": {
+          "name": "Sex",
+          "dtype": "str"
+        },
+        "col6": {
+          "name": "Age",
+          "dtype": "float"
+        },
+        "col7": {
+          "name": "SibSp",
+          "dtype": "int"
+        },
+        "col8": {
+          "name": "Parch",
+          "dtype": "int"
+        },
+        "col9": {
+          "name": "Ticket",
+          "dtype": "str"
+        },
+        "col10": {
+          "name": "Fare",
+          "dtype": "float"
+        },
+        "col11": {
+          "name": "Cabin",
+          "dtype": "str"
+        },
+        "col12": {
+          "name": "Embarked",
+          "dtype": "str"
+        }
+      }
+    }
+  }
+}
