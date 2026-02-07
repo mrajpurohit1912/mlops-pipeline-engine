@@ -63,13 +63,24 @@ Level 2,Stage,A logical group of related operations.,DataValidationStage
 Level 3,Task,The atomic execution unit.,DataTypeValidatorTask
 
 # todays todo list
-1. add stages on top of task which will interact with orchestrator and not tasks itself
+1. add stages on top of task which will interact with orchestrator and not tasks itself(done)
 
-2. refactor orchestrator to check the status of as task(state manager) , schedule a task , retry policy
+2. refactor orchestrator to check the status of as task(state manager) , schedule a task , retry policy(pending)(to implement this we need to add metadata to task and stages)
 
-3. add artifacts module to save the artifacts at each stage.
+3. add artifacts module to save the artifacts at each stage.(pending)
 
-4. add context in pipeline(avoid passing dfs between stages as context instead create model)
+4. add context in pipeline(avoid passing dfs between stages as context instead create model)(pending)
 
-# today todo 
-1. make the input yaml/json into a uniform format.
+lets first add context and metadata in task and stages
+update task and stage to return metadata and the result
+
+current task is to 
+1. add Artifact manager which will help to design the context and integrate with the current code
+add context between tasks and stages 
+
+
+
+
+
+
+# create pydantic models for the input and output for artifacts manager

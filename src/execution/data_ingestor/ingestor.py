@@ -1,7 +1,16 @@
 from pathlib import Path
-
+from datetime import datetime
 import polars as pl
+
 from core.tasks.base import TaskBase
+from core.models.metadata import (
+    BaseMetaData,
+    TaskExecutionResult,
+    ExecutionStatus,
+    PipelineContext,
+)
+
+
 
 
 class CsvIngestor(TaskBase):
@@ -14,16 +23,35 @@ class CsvIngestor(TaskBase):
     def __init__(self, data_path: Path):
         self.data_path = data_path
 
-    def execute(self, context: dict) -> dict:
+    def execute(self, context:PipelineContext) -> TaskExecutionResult:
         """
-        Reads a CSV file into a Polars DataFrame and adds it to the context.
+        Reads a CSV file into a Polars DataFrame .
 
         Args:
-            context: The current pipeline context.
+            pipeline_run_id: Pipeline Run ID.
 
         Returns:
-            The updated context with the DataFrame.
+            ExecutionResult Which is combination of meatadata and the result of the task.
         """
-        df = pl.read_csv(self.data_path)
-        context["df"] = df
-        return context
+        metadata = self._prepare_metadata(
+            context.pipeline_run_id,
+            name=self.name,
+            )
+        
+        try:
+            df = pl.read_csv(self.data_path)
+
+            metadata.status = ExecutionStatus.COMPLETED
+            metadata.end_at = datetime.utcnow()
+
+            return TaskExecutionResult(
+                metadata=metadata,
+                output={"row_count": len(df)},
+                artifacts={"file_path": str(self.data_path)},
+                )
+        except Exception as e:
+            metadata.status = ExecutionStatus.FAILED
+            metadata.error_message = str(e)
+            metadata.end_at = datetime.utcnow()
+            raise e
+

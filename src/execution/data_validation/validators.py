@@ -1,6 +1,10 @@
 import logging
+
 import polars as pl
+
 from core.tasks.base import TaskBase
+from core.models.metadata import TaskExecutionResult
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +19,7 @@ class MissingValueValidator(TaskBase):
     def __init__(self, missing_percentage: float):
         self.missing_percentage = missing_percentage
 
-    def execute(self, context: dict) -> dict:
+    def execute(self) -> TaskExecutionResult:
         """
         Validates that the percentage of missing values in each column does
         not exceed the configured threshold.
@@ -45,6 +49,7 @@ class MissingValueValidator(TaskBase):
         logger.info("Missing value validation passed.")
         return context
 
+
 class DataTypeValidator(TaskBase):
     """
     A task to validate the data types of columns in a DataFrame.
@@ -55,7 +60,7 @@ class DataTypeValidator(TaskBase):
     def __init__(self, column_config: dict):
         self.column_config = column_config
 
-    def execute(self, context: dict) -> dict:
+    def execute(self) -> TaskExecutionResult:
         """
         Validates that the data types of columns match the configured types.
 

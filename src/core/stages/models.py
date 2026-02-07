@@ -20,5 +20,3 @@ class StageResult(BaseModel):
 class StageExecutionResult(BaseModel):
     metadata: StageMetaData
     result: StageResult
-
-

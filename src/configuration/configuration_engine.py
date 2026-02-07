@@ -43,10 +43,13 @@ class ConfigurationEngine:
         self.default_validator = default_validator
         self.dag_generator = dag_generator
 
-    def build_execution_plan(self, input_config_path: Path,default_config_path: Path
-) -> list[StageBase]:
+    def build_execution_plan(
+        self, input_config_path: Path, default_config_path: Path
+    ) -> list[StageBase]:
         raw_input_config = self.input_config_parser.parse(input_config_path)
         raw_default_config = self.default_config_parser.parse(default_config_path)
         validated_input_config = self.input_validator.validate(raw_input_config)
         validated_default_config = self.default_validator.validate(raw_default_config)
-        return self.dag_generator.generate_execution_plan(validated_input_config, validated_default_config)
+        return self.dag_generator.generate_execution_plan(
+            validated_input_config, validated_default_config
+        )

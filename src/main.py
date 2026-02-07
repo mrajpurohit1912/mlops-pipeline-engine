@@ -23,18 +23,28 @@ def main():
     # yaml_parser = YamlParser()
     # yaml_parser = JsonParser()
 
-    input_config_parser = ConfigParserFactory.get_parser(args.config_path.suffix.lstrip("."))
-    default_config_parser = ConfigParserFactory.get_parser(args.default_config_path.suffix.lstrip("."))
+    input_config_parser = ConfigParserFactory.get_parser(
+        args.config_path.suffix.lstrip(".")
+    )
+    default_config_parser = ConfigParserFactory.get_parser(
+        args.default_config_path.suffix.lstrip(".")
+    )
 
-
-    input_schema_validator = SchemaValidatorFactory.get_schema_validator(args.config_path)
-    default_schema_validator = SchemaValidatorFactory.get_schema_validator(args.default_config_path)
-
+    input_schema_validator = SchemaValidatorFactory.get_schema_validator(
+        args.config_path
+    )
+    default_schema_validator = SchemaValidatorFactory.get_schema_validator(
+        args.default_config_path
+    )
 
     dag_generator = DAGGenerator()
 
     configuration_engine = ConfigurationEngine(
-        input_config_parser, default_config_parser, input_schema_validator, default_schema_validator,dag_generator
+        input_config_parser,
+        default_config_parser,
+        input_schema_validator,
+        default_schema_validator,
+        dag_generator,
     )
 
     orchestrator = PipelineOrchestrator()
@@ -42,7 +52,9 @@ def main():
         configuration_engine, orchestrator
     )
 
-    context_result = tabular_classification_pipeline.run(args.config_path,args.default_config_path)
+    context_result = tabular_classification_pipeline.run(
+        args.config_path, args.default_config_path
+    )
 
     print(f"Context result: {context_result}")
 

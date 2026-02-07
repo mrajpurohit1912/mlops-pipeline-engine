@@ -11,4 +11,3 @@ class InputSchemaValidator(SchemaValidatorBase):
 class DefaultSchemaValidator(SchemaValidatorBase):
     def validate(self, raw_config: dict) -> DefaultConfig:
         return DefaultConfig(**raw_config)
-
