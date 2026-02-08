@@ -14,6 +14,7 @@ class DataIngestionStage(StageBase):
     depends_on = None
     tasks = []
 
+
 class DataValidationStage(StageBase):
     """
     A pipeline stage for validating data.
@@ -22,4 +23,3 @@ class DataValidationStage(StageBase):
     name = "data_validation_stage"
     depends_on = ["data_ingestion_stage"]
     tasks = []
-

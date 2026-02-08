@@ -1,12 +1,11 @@
 import logging
-from typing import Dict
 
-from core.stages.base import StageBase
 from core.models.metadata import (
+    PipelineContext,
     PipelineExecutionResult,
     StageExecutionResult,
-    PipelineContext,
 )
+from core.stages.base import StageBase
 
 logger = logging.getLogger(__name__)
 
@@ -17,10 +16,8 @@ class PipelineOrchestrator:
     """
 
     def run(
-        self, 
-        stages: list[StageBase],
-        pipeline_run_id:str
-        ) -> PipelineExecutionResult:
+        self, stages: list[StageBase], pipeline_run_id: str
+    ) -> PipelineExecutionResult:
         """
         Executes a pipeline by running its stages in sequence.
 
@@ -32,28 +29,23 @@ class PipelineOrchestrator:
             The final context dictionary after all stages have been executed.
         """
         logger.info("Starting pipeline execution.")
-        stage_results = Dict[str,StageExecutionResult]
+        stage_results = dict[str, StageExecutionResult]
 
-        context = PipelineContext(
-            pipeline_run_id=pipeline_run_id
-            )
+        context = PipelineContext(pipeline_run_id=pipeline_run_id)
 
         for stage in stages:
-            result = stage.run(context,pipeline_run_id)
+            result = stage.run(context, pipeline_run_id)
             stage_results[stage.name] = result
-            
-    
+
         return PipelineExecutionResult(
             pipeline_run_id=pipeline_run_id,
             stages=stage_results,
         )
 
-   
-
     # def stage_manager(self,result):#result has to be the metadata + result of task/stage
     #     """
     #     Checks the status of the stage/task and update in Metadata Store.
-        
+
     #     Args:
     #         result: The result of the stage/task
     #     Return:
@@ -64,5 +56,3 @@ class PipelineOrchestrator:
     #         pass
     #     else:
     #         pass
-
-

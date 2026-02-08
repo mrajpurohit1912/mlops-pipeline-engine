@@ -2,9 +2,8 @@ import logging
 
 import polars as pl
 
-from core.tasks.base import TaskBase
 from core.models.metadata import TaskExecutionResult
-
+from core.tasks.base import TaskBase
 
 logger = logging.getLogger(__name__)
 
