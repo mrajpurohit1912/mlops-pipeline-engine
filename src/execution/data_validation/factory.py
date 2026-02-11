@@ -12,7 +12,7 @@ class DataValidatorFactory:
     """
 
     @staticmethod
-    def create_tasks(task_name:str,validation_config: MLConfig) -> TaskBase:
+    def create_task(task_name: str, validation_config: MLConfig) -> TaskBase:
         """
         Creates a list of data validation tasks based on the validation config.
 
@@ -44,7 +44,6 @@ class DataValidatorFactory:
 
         # return tasks
 
-
         if task_name == "missing_value_validator":
             return MissingValueValidator(
                 missing_percentage=validation_config.data_validation.missing_value_validation.missing_percentage
@@ -55,6 +54,3 @@ class DataValidatorFactory:
             )
         else:
             raise ValueError(f"Unsupported validator type: {task_name}")
-        
-
-

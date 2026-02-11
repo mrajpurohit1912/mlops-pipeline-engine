@@ -1,8 +1,10 @@
-from pydantic import BaseModel,Field
-from typing import Any,Literal
 from enum import Enum
+from typing import Literal
 
-class TaskNames(str,Enum):
+from pydantic import BaseModel, Field
+
+
+class TaskNames(str, Enum):
     csv_data_ingestor: str = "csv_data_ingestor"
     missing_value_validator: str = "missing_value_validator"
     data_type_validator: str = "data_type_validator"
@@ -25,7 +27,6 @@ class Stage(BaseModel):
     ]
     tasks: list[Task] = Field(default_factory=list)
 
-    
+
 class DefaultConfig(BaseModel):
     stages: list[Stage]
-

@@ -1,7 +1,6 @@
-from configuration.schema.input_config_schema import MLConfig
 from configuration.schema.base_config_schema import Stage
+from configuration.schema.input_config_schema import MLConfig
 from core.stages.base import StageBase
-from core.tasks.base import TaskBase
 from core.stages.stages import DataIngestionStage, DataValidationStage
 from execution.data_ingestor.factory import DataIngestorFactory
 from execution.data_validation.factory import DataValidatorFactory
@@ -12,37 +11,9 @@ class DAGGenerator:
     Generates the pipeline's execution plan as a list of stages (the DAG).
     """
 
-    # def generate_execution_plan(self, config: MLConfig) -> list[StageBase]:
-    #     """
-    #     Generates a list of stages based on the pipeline configuration.
-
-    #     Args:
-    #         config: The validated pipeline configuration.
-
-    #     Returns:
-    #         A list of `StageBase` objects representing the execution plan.
-    #     """
-    #     stages = []
-
-    #     # Create Data Ingestion Stage
-    #     ingestion_task = DataIngestorFactory.create_task(config.data.source)
-    #     ingestion_stage = DataIngestionStage(task=ingestion_task)
-    #     stages.append(ingestion_stage)
-
-    #     # Create Data Validation Stage if enabled
-    #     if config.validation and config.validation.enabled:
-    #         validation_tasks = DataValidatorFactory.create_tasks(config.validation)
-    #         if validation_tasks:
-    #             validation_stage = DataValidationStage(tasks=validation_tasks)
-    #             stages.append(validation_stage)
-
-    #     # Future stages (cleaning, feature engineering, training) would be added here
-
-    #     return stages
-
-
-
-    def generate_execution_plan(self, validated_input_config: MLConfig,validated_default_config:Stage) -> list[StageBase]:
+    def generate_execution_plan(
+        self, validated_input_config: MLConfig, validated_default_config: Stage
+    ) -> list[StageBase]:
         """
         Generates a list of stages based on the pipeline configuration.
 
@@ -55,12 +26,13 @@ class DAGGenerator:
         stages = []
 
         for stage_config in validated_default_config.stages:
-     
             if stage_config.enabled and stage_config.stage_name == "data_ingestion":
                 ingestion_stage = DataIngestionStage()
                 for task in stage_config.tasks:
                     if task.enabled:
-                        ingestion_task = DataIngestorFactory.create_task(task.task_name,validated_input_config)
+                        ingestion_task = DataIngestorFactory.create_task(
+                            task.task_name, validated_input_config
+                        )
                         ingestion_stage.add_task(ingestion_task)
                 stages.append(ingestion_stage)
 
@@ -68,24 +40,10 @@ class DAGGenerator:
                 data_validation_stage = DataValidationStage()
                 for task in stage_config.tasks:
                     if task.enabled:
-                        validation_task = DataValidatorFactory.create_tasks(task.task_name,validated_input_config)
+                        validation_task = DataValidatorFactory.create_task(
+                            task.task_name, validated_input_config
+                        )
                         data_validation_stage.add_task(validation_task)
                 stages.append(data_validation_stage)
 
         return stages
-
-
-
-
-    # def create_task(self, config: MLConfig) -> TaskBase:
-    #     """
-    #     Placeholder for creating a task based on the configuration.
-    #     Currently not implemented.
-
-    #     Args:
-    #         config: The validated pipeline configuration.
-    #     Returns:
-    #         An instance of a configured task.
-    #     """
-
-        

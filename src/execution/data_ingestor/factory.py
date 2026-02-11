@@ -24,4 +24,3 @@ class DataIngestorFactory:
             return CsvIngestor(data_path=input_source_config.data.path)
         else:
             raise ValueError(f"Unsupported ingestor type: {task_name}")
-

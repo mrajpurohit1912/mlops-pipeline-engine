@@ -1,4 +1,13 @@
+import uuid
 from abc import ABC, abstractmethod
+from datetime import datetime
+
+from core.models.metadata import (
+    BaseMetaData,
+    ExecutionStatus,
+    PipelineContext,
+    TaskExecutionResult,
+)
 
 
 class TaskBase(ABC):
@@ -12,8 +21,23 @@ class TaskBase(ABC):
     name: str
     depends_on: list[str] | None = None
 
+    def __init__(self):
+        self.task_id: str = str(uuid.uuid4())
+
+    def _prepare_metadata(
+        self, context: PipelineContext, task_name: str
+    ) -> BaseMetaData:
+        return BaseMetaData(
+            pipeline_run_id=context.pipeline_run_id,
+            name=task_name,
+            status=ExecutionStatus.RUNNING,
+            started_at=datetime.utcnow(),
+        )
+
     @abstractmethod
-    def execute(self, context: dict) -> dict:
+    def execute(
+        self, context: PipelineContext, pipeline_id: str
+    ) -> TaskExecutionResult:
         """
         Executes the task.
 
@@ -24,4 +48,3 @@ class TaskBase(ABC):
             The updated context dictionary.
         """
         pass
-

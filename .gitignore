@@ -8,15 +8,36 @@ wheels/
 
 # Virtual environments
 .venv
-data
 
-notebooks
-
-app.log
+#IDE files
+.vscode/
 
 
+#Logs and Runtime files
+logs/
 *.log
+*.logs
 
+#Data and Models   
+data
+artifacts
+
+#Jupyter
+notebooks
+.ipynb_checkpoints/
+
+
+#ML Tools
+
+mlruns/
 mlflow.db
 
-take
+
+# Unwanted md files
+takeaways.md
+plan.md
+trd.md
+todo.md
+
+# Ruff cache
+.ruff_cache/

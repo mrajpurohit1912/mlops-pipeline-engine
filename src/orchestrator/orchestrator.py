@@ -1,5 +1,10 @@
 import logging
-import uuid
+
+from artifacts_manager.artifact_manager import ArtifactManager
+from core.models.metadata import (
+    PipelineContext,
+    PipelineExecutionResult,
+)
 from core.stages.base import StageBase
 
 logger = logging.getLogger(__name__)
@@ -10,7 +15,12 @@ class PipelineOrchestrator:
     Orchestrates the execution of a pipeline by running a list of stages.
     """
 
-    def run(self, stages: list[StageBase]) -> dict:
+    def __init__(self, artifact_manager: ArtifactManager):
+        self.artifact_manager = artifact_manager
+
+    def run(
+        self, stages: list[StageBase], pipeline_run_id: str
+    ) -> PipelineExecutionResult:
         """
         Executes a pipeline by running its stages in sequence.
 
@@ -21,18 +31,34 @@ class PipelineOrchestrator:
         Returns:
             The final context dictionary after all stages have been executed.
         """
-        #run_id = str(uuid.uuid4())
-        # The logger adapter is configured in main.py, but we can add the run_id here.
-        # A better solution would be to use a centralized context object.
-        #log_adapter = logging.LoggerAdapter(logger, {"run_id": run_id})
+        logger.info("Starting pipeline execution.")
+        stage_results = {}
 
-        #log_adapter.info("--- Starting Pipeline Execution ---")
-        #context = {"run_id": run_id}
-        context = {}
+        context = PipelineContext(
+            pipeline_run_id=pipeline_run_id,
+            artifact_manager=self.artifact_manager,
+        )
 
         for stage in stages:
-            context = stage.run(context)
-            #log_adapter.info(f"Context: {context}")
+            result = stage.run(context)
+            stage_results[stage.name] = result
 
-        #log_adapter.info("--- Pipeline Execution Completed ---")
-        return context
+        return PipelineExecutionResult(
+            pipeline_run_id=pipeline_run_id,
+            stages=stage_results,
+        )
+
+    # def stage_manager(self,result):#result has to be the metadata + result of task/stage
+    #     """
+    #     Checks the status of the stage/task and update in Metadata Store.
+
+    #     Args:
+    #         result: The result of the stage/task
+    #     Return:
+    #         None
+    #     """
+
+    #     if result.status == "SUCCESS":# Complete the logic here
+    #         pass
+    #     else:
+    #         pass

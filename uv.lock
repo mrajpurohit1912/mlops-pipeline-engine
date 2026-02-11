@@ -426,7 +426,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mlflow", specifier = ">=3.8.1" },
+    { name = "mlflow", specifier = ">=2.10.2" },
     { name = "pandas", specifier = ">=2.3.3" },
     { name = "polars", specifier = ">=1.37.1" },
     { name = "pydantic", specifier = ">=2.12.5" },

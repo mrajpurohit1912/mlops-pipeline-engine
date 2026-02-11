@@ -26,6 +26,7 @@ class MissingValueValidationConfig(BaseModel):
         ge=0, le=100, description="Allowed Missing Value Percentage"
     )
 
+
 class DataValidationConfig(BaseModel):
     missing_value_validation: MissingValueValidationConfig
     data_type_validation: DataTypeValidationConfig
