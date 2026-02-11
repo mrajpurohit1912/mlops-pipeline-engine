@@ -12,7 +12,7 @@ class DataValidatorFactory:
     """
 
     @staticmethod
-    def create_tasks(task_name: str, validation_config: MLConfig) -> TaskBase:
+    def create_task(task_name: str, validation_config: MLConfig) -> TaskBase:
         """
         Creates a list of data validation tasks based on the validation config.
 

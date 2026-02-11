@@ -1,9 +1,9 @@
 import logging
 
+from artifacts_manager.artifact_manager import ArtifactManager
 from core.models.metadata import (
     PipelineContext,
     PipelineExecutionResult,
-    StageExecutionResult,
 )
 from core.stages.base import StageBase
 
@@ -14,6 +14,9 @@ class PipelineOrchestrator:
     """
     Orchestrates the execution of a pipeline by running a list of stages.
     """
+
+    def __init__(self, artifact_manager: ArtifactManager):
+        self.artifact_manager = artifact_manager
 
     def run(
         self, stages: list[StageBase], pipeline_run_id: str
@@ -29,12 +32,15 @@ class PipelineOrchestrator:
             The final context dictionary after all stages have been executed.
         """
         logger.info("Starting pipeline execution.")
-        stage_results = dict[str, StageExecutionResult]
+        stage_results = {}
 
-        context = PipelineContext(pipeline_run_id=pipeline_run_id)
+        context = PipelineContext(
+            pipeline_run_id=pipeline_run_id,
+            artifact_manager=self.artifact_manager,
+        )
 
         for stage in stages:
-            result = stage.run(context, pipeline_run_id)
+            result = stage.run(context)
             stage_results[stage.name] = result
 
         return PipelineExecutionResult(

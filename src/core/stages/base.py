@@ -5,10 +5,10 @@ from datetime import datetime
 
 from core.models.metadata import (
     BaseMetaData,
-    Context,
     ExecutionStatus,
     StageExecutionResult,
     TaskExecutionResult,
+    PipelineContext
 )
 from core.tasks.base import TaskBase
 
@@ -36,14 +36,14 @@ class StageBase(ABC):
     ) -> BaseMetaData:
         return BaseMetaData(
             pipeline_run_id=pipeline_run_id,
-            name=StageBase.name,
+            name=self.name,
             status=ExecutionStatus.RUNNING,
             started_at=datetime.utcnow(),
         )
 
     def run(
         self,
-        context: Context,
+        context: PipelineContext,
     ) -> StageExecutionResult:
         """
         Runs all tasks within the stage.
@@ -55,8 +55,8 @@ class StageBase(ABC):
             The updated pipeline context.
         """
         logger.info(f"--- Starting Stage: {self.name} ---")
-        stage_metadata = self._prepare_meatadata(
-            pipeline_id=context.pipeline_run_id, task_name=StageBase.name
+        stage_metadata = self._prepare_metadata(
+            pipeline_run_id=context.pipeline_run_id, 
         )
 
         task_results: dict[str, TaskExecutionResult] = {}
@@ -65,9 +65,10 @@ class StageBase(ABC):
             for task in self.tasks:
                 logger.info(f"Executing task: {task.name}")
                 result = task.execute(context)
+                context.task_results[task.name] = result
                 task_results[task.name] = result
                 logger.info(
-                    f"Task {task.name} executed successfully. with task status {result.status}"
+                    f"Task {task.name} executed successfully. with task status {result.metadata.status}"
                 )
 
             stage_metadata.status = ExecutionStatus.COMPLETED

@@ -40,7 +40,7 @@ class DAGGenerator:
                 data_validation_stage = DataValidationStage()
                 for task in stage_config.tasks:
                     if task.enabled:
-                        validation_task = DataValidatorFactory.create_tasks(
+                        validation_task = DataValidatorFactory.create_task(
                             task.task_name, validated_input_config
                         )
                         data_validation_stage.add_task(validation_task)

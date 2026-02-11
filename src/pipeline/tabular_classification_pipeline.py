@@ -26,6 +26,6 @@ class TabularClassificationPipeline:
 
         context_result = self.orchestrator.run(
             stages=complete_plan,
-            pipeline_id=uuid4(),
+            pipeline_run_id=str(uuid4()),
         )
         return context_result

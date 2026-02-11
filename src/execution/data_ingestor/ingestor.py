@@ -3,6 +3,7 @@ from pathlib import Path
 
 import polars as pl
 
+from artifacts_manager.models.models import ArtifactsInput, ArtifactType
 from core.models.metadata import (
     ExecutionStatus,
     PipelineContext,
@@ -23,22 +24,28 @@ class CsvIngestor(TaskBase):
 
     def execute(self, context: PipelineContext) -> TaskExecutionResult:
         """
-        Reads a CSV file into a Polars DataFrame .
+        Reads a CSV file into a Polars DataFrame and registers it as an artifact.
 
         Args:
-            pipeline_run_id: Pipeline Run ID.
+            context: The pipeline context.
 
         Returns:
-            ExecutionResult Which is combination of meatadata and the result of the task.
+            A TaskExecutionResult with the artifact_id of the registered artifact.
         """
-        metadata = self._prepare_metadata(
-            context.pipeline_run_id,
-            name=self.name,
-        )
+        metadata = self._prepare_metadata(context, self.name)
         try:
             df = pl.read_csv(self.data_path)
 
-            df.to_csv(self.data_path)
+            artifact_input = ArtifactsInput(
+                stage_name="data_ingestion",
+                task_name=self.name,
+                artifact_name="raw_dataset",
+                artifact_type=ArtifactType.DATASET,
+                artifact_path=str(self.data_path),
+                pipeline_run_id=context.pipeline_run_id,
+                created_at=datetime.now(),
+            )
+            artifact_output = context.artifact_manager.register_artifact(artifact_input)
 
             metadata.status = ExecutionStatus.COMPLETED
             metadata.end_at = datetime.utcnow()
@@ -46,7 +53,7 @@ class CsvIngestor(TaskBase):
             return TaskExecutionResult(
                 metadata=metadata,
                 output={"row_count": len(df)},
-                artifacts={"file_path": str(self.data_path)},
+                artifacts={"dataset_id": artifact_output.artifact_id},
             )
         except Exception as e:
             metadata.status = ExecutionStatus.FAILED

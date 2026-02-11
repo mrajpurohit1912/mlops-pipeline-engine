@@ -3,12 +3,22 @@ from uuid import uuid4
 
 from artifacts_manager.base import ArtifactManagerBase
 from artifacts_manager.models.models import ArtifactsInput, ArtifactsOutput
+from artifacts_manager.store.local_store import LocalStore
+from artifacts_manager.store.mlflow_store import MLflowStore
 
 
 class ArtifactManager(ArtifactManagerBase):
     """
     Artifact Manager for managing,versioning the datasets
     """
+
+    def __init__(self, store_type: str = "mlflow", tracking_uri: str = "artifacts"):
+        if store_type == "local":
+            self.store = LocalStore(tracking_uri)
+        elif store_type == "mlflow":
+            self.store = MLflowStore(tracking_uri)
+        else:
+            raise ValueError(f"Unsupported store type: {store_type}")
 
     def register_artifact(self, artifact_input: ArtifactsInput) -> ArtifactsOutput:
         artifact_output = ArtifactsOutput(
@@ -23,8 +33,8 @@ class ArtifactManager(ArtifactManagerBase):
             created_at=datetime.now(),
             metadata=artifact_input.metadata,
         )
+        self.store.save_artifact(artifact_output)
         return artifact_output
 
     def get_artifact(self, artifact_id: str) -> ArtifactsOutput:
-        # Implement logic to retrieve artifact based on artifact_id
-        pass
+        return self.store.get_artifact(artifact_id)
