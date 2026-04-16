@@ -1,6 +1,6 @@
 import mlflow
 
-from artifacts_manager.models.models import ArtifactsOutput
+from core.artifacts_core.models import ArtifactsOutput
 
 
 class MLflowStore:
@@ -18,6 +18,10 @@ class MLflowStore:
         Args:
             artifact: An instance of ArtifactsOutput containing artifact details.
         """
+        # if artifact.artifact_type == "dataset":
+            
+
+
         with mlflow.start_run(run_id=artifact.pipeline_run_id):
             mlflow.log_dict(artifact.dict(), "artifact_metadata.json")
 

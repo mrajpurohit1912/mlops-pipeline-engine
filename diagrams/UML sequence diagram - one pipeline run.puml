@@ -3,7 +3,7 @@ title Sequence Diagram - Single Pipeline Execution
 
 actor "ML Engineer / Data Scientist / Adminstrator" as user
 participant "Configuration Engine" as config 
-participant "Paritcipant Engine" as orchestrator
+participant "Orchestration Engine" as orchestrator
 participant "Execution Engine" as exec
 database "Metadata Store" as meta
 participant "Artifact Store" as artifacts

@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from artifacts_manager.models.models import ArtifactsOutput
+from core.artifacts_core.models import ArtifactsOutput
 
 
 class LocalStore:

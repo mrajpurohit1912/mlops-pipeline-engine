@@ -1,5 +1,5 @@
 
-environment: prod
+environment: dev
 
 data:
   #task_name: csv_data_ingestor

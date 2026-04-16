@@ -5,7 +5,7 @@ from pathlib import Path
 
 import polars as pl
 
-from artifacts_manager.models.models import ArtifactsInput, ArtifactType
+from core.artifacts_core.models import ArtifactsInput, ArtifactType
 from core.models.metadata import (
     ExecutionStatus,
     PipelineContext,

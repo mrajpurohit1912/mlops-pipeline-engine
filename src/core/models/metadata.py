@@ -39,7 +39,7 @@ class TaskExecutionResult(BaseModel):
 
     metadata: BaseMetaData
     output: dict[str, Any] | None = None
-    artifacts: dict[str, str] | None = None
+    #artifacts: dict[str, str] | None = None
 
 
 class StageExecutionResult(BaseModel):
@@ -57,3 +57,5 @@ class PipelineContext(BaseModel):
     stage_results: dict[str, StageExecutionResult] = {}
     task_results: dict[str, TaskExecutionResult] = {}
     artifact_manager: Any = None
+    dataset_manager: Any = None
+

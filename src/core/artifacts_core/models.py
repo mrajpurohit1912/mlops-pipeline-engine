@@ -2,6 +2,9 @@ from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel
+from typing import Literal
+from pathlib import Path
+
 
 
 class ArtifactType(str, Enum):
@@ -9,8 +12,6 @@ class ArtifactType(str, Enum):
     MODEL = "model"
     METRICS = "metrics"
     REPORT = "report"
-    CONFIG = "config"
-    PREDICTIONS = "predictions"
 
 
 class ArtifactsInput(BaseModel):
@@ -37,3 +38,16 @@ class ArtifactsOutput(BaseModel):
     pipeline_run_id: str
     created_at: datetime
     metadata: dict | None = None
+
+
+class ArtifactDescriptor(BaseModel):
+    artifact_type: Literal["dataset", "model", "metrics"]
+    name: str
+    uri: Path
+    stage_name: str
+    task_name: str
+    pipeline_run_id: str
+    created_at: datetime
+
+    class Config:
+        frozen = True

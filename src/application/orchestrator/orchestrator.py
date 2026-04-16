@@ -1,6 +1,7 @@
 import logging
 
 from artifacts_manager.artifact_manager import ArtifactManager
+from utils.dataset_manager.base import DatasetManagerBase
 from core.models.metadata import (
     PipelineContext,
     PipelineExecutionResult,
@@ -15,8 +16,9 @@ class PipelineOrchestrator:
     Orchestrates the execution of a pipeline by running a list of stages.
     """
 
-    def __init__(self, artifact_manager: ArtifactManager):
+    def __init__(self, artifact_manager: ArtifactManager,dataset_manager:DatasetManagerBase):
         self.artifact_manager = artifact_manager
+        self.dataset_manager = dataset_manager
 
     def run(
         self, stages: list[StageBase], pipeline_run_id: str
@@ -37,6 +39,7 @@ class PipelineOrchestrator:
         context = PipelineContext(
             pipeline_run_id=pipeline_run_id,
             artifact_manager=self.artifact_manager,
+            dataset_manager=self.dataset_manager,
         )
 
         for stage in stages:

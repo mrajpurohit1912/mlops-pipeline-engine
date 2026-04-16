@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from artifacts_manager.models.models import ArtifactsInput, ArtifactsOutput
+from core.artifacts_core.models import ArtifactsInput, ArtifactsOutput
 
 
 class ArtifactManagerBase(ABC):

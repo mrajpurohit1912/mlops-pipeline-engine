@@ -1,8 +1,8 @@
 from datetime import datetime
 from uuid import uuid4
 
-from artifacts_manager.base import ArtifactManagerBase
-from artifacts_manager.models.models import ArtifactsInput, ArtifactsOutput
+from core.artifacts_core.base import ArtifactManagerBase
+from core.artifacts_core.models import ArtifactsInput, ArtifactsOutput
 from artifacts_manager.store.local_store import LocalStore
 from artifacts_manager.store.mlflow_store import MLflowStore
 
@@ -13,9 +13,9 @@ class ArtifactManager(ArtifactManagerBase):
     """
 
     def __init__(self, store_type: str = "mlflow", tracking_uri: str = "artifacts"):
-        if store_type == "local":
-            self.store = LocalStore(tracking_uri)
-        elif store_type == "mlflow":
+        # if store_type == "local":
+        #     self.store = LocalStore(tracking_uri)
+        if store_type == "mlflow":
             self.store = MLflowStore(tracking_uri)
         else:
             raise ValueError(f"Unsupported store type: {store_type}")

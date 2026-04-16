@@ -6,10 +6,13 @@ from configuration.config_parser.factory import ConfigParserFactory
 from configuration.configuration_engine import ConfigurationEngine
 from configuration.dag.dag_generator import DAGGenerator
 from configuration.schema_validator.factory import SchemaValidatorFactory
-from orchestrator.orchestrator import PipelineOrchestrator
+from application.orchestrator.orchestrator import PipelineOrchestrator
 from pipeline.tabular_classification_pipeline import TabularClassificationPipeline
 from runtime.bootstrap import RuntimeBootstrapper
 from artifacts_manager.artifact_manager import ArtifactManager
+from utils.dataset_manager.factory import DatasetManagerFactory
+
+
 
 def main():
     config = Config()
@@ -44,9 +47,12 @@ def main():
         dag_generator,
     )
 
+    if "tabular_classification_pipeline" or "tabular_regression_pipeline" in str(args.config_path):
+        dataset_manager = DatasetManagerFactory.get_dataset_manager("tabular",config.DATASTORAGE_ARTIFACT_BASE_PATH)
+
     artifact_manager = ArtifactManager()
 
-    orchestrator = PipelineOrchestrator(artifact_manager)
+    orchestrator = PipelineOrchestrator(artifact_manager,dataset_manager)
     tabular_classification_pipeline = TabularClassificationPipeline(
         configuration_engine, orchestrator
     )

@@ -1,15 +1,17 @@
-from datetime import datetime
+from datetime import date,datetime
 from pathlib import Path
 
 import polars as pl
 
-from artifacts_manager.models.models import ArtifactsInput, ArtifactType
+from core.artifacts_core.models import ArtifactsInput, ArtifactType
 from core.models.metadata import (
     ExecutionStatus,
     PipelineContext,
     TaskExecutionResult,
 )
 from core.tasks.base import TaskBase
+from utils.dataset_manager.dto import DatasetSaveRequest
+
 
 
 class CsvIngestor(TaskBase):
@@ -21,6 +23,17 @@ class CsvIngestor(TaskBase):
 
     def __init__(self, data_path: Path):
         self.data_path = data_path
+
+    def _read_csv(self) -> pl.DataFrame:
+        """
+        Reads a CSV file into a Polars DataFrame.
+
+        Returns:
+            A Polars DataFrame containing the data from the CSV file.
+        """
+        return pl.read_csv(self.data_path)
+
+
 
     def execute(self, context: PipelineContext) -> TaskExecutionResult:
         """
@@ -34,26 +47,27 @@ class CsvIngestor(TaskBase):
         """
         metadata = self._prepare_metadata(context, self.name)
         try:
-            df = pl.read_csv(self.data_path)
+            df = self._read_csv()
 
-            artifact_input = ArtifactsInput(
-                stage_name="data_ingestion",
-                task_name=self.name,
-                artifact_name="raw_dataset",
-                artifact_type=ArtifactType.DATASET,
-                artifact_path=str(self.data_path),
-                pipeline_run_id=context.pipeline_run_id,
-                created_at=datetime.now(),
+            save_request = DatasetSaveRequest(
+            dataset_layer="raw",
+            dataset_name="raw_dataset",
+            execution_date=date.today(),
+            pipeline_run_id=context.pipeline_run_id,
+            version="1.0",
             )
-            artifact_output = context.artifact_manager.register_artifact(artifact_input)
+
+            dataset_path = context.dataset_manager.save_dataset(
+            dataset=df,
+            request=save_request,
+            )
 
             metadata.status = ExecutionStatus.COMPLETED
             metadata.end_at = datetime.utcnow()
 
             return TaskExecutionResult(
                 metadata=metadata,
-                output={"row_count": len(df)},
-                artifacts={"dataset_id": artifact_output.artifact_id},
+                output={"dataset_path": dataset_path},
             )
         except Exception as e:
             metadata.status = ExecutionStatus.FAILED

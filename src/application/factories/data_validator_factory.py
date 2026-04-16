@@ -1,6 +1,6 @@
 from configuration.schema.input_config_schema import MLConfig
 from core.tasks.base import TaskBase
-from execution.data_validation.validators import (
+from application.tasks.data_validators import (
     DataTypeValidator,
     MissingValueValidator,
 )

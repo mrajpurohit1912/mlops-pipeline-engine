@@ -1,6 +1,6 @@
 from configuration.schema.input_config_schema import DataConfig
 from core.tasks.base import TaskBase
-from execution.data_ingestor.ingestor import CsvIngestor
+from application.tasks.data_ingestor import CsvIngestor
 
 
 class DataIngestorFactory:

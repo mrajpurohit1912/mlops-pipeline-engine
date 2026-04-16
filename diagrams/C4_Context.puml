@@ -25,3 +25,4 @@ Rel(ml_ai_ops, model_registry, "Registers and retrieves models from")
 Rel(ml_ai_ops, monitoring, "Emits logs and metrics to")
 Rel(ml_ai_ops, identity, "Retrieves secrets and credentials from")
 @enduml
+
