@@ -1,7 +1,7 @@
 import logging
 
-from artifacts_manager.artifact_manager import ArtifactManager
-from utils.dataset_manager.base import DatasetManagerBase
+from infrastructure.artifacts_manager.artifact_manager import ArtifactManager
+from core.dataset_core.base import DatasetManagerBase
 from core.models.metadata import (
     PipelineContext,
     PipelineExecutionResult,

@@ -1,7 +1,7 @@
 from pathlib import Path
 from abc import ABC, abstractmethod
 
-from utils.dataset_manager.dto import DatasetSaveRequest
+from core.dataset_core.dto import DatasetSaveRequest
 
 
 class DatasetManagerBase(ABC):

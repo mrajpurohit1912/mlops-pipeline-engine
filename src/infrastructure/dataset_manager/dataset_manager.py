@@ -2,8 +2,8 @@ from pathlib import Path
 import polars as pl
 
 
-from utils.dataset_manager.base import DatasetManagerBase
-from utils.dataset_manager.dto import DatasetSaveRequest
+from core.dataset_core.base import DatasetManagerBase
+from core.dataset_core.dto import DatasetSaveRequest
 
 
 
@@ -30,10 +30,11 @@ class DatasetManagerTabular(DatasetManagerBase):
         file_path = dataset_path / f"{request.dataset_name}.{request.format}"
         
 
-        if dataset.format == "csv":
-            dataset.write_csv(file_path)
-        else:   
-            dataset.write_parquet(file_path)
+        # if dataset.format == "csv":
+        #     dataset.write_csv(file_path)
+        # else:   
+        #     dataset.write_parquet(file_path)
+        dataset.write_csv(file_path)
 
         return file_path
 

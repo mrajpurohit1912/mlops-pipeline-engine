@@ -3,8 +3,8 @@ from uuid import uuid4
 
 from core.artifacts_core.base import ArtifactManagerBase
 from core.artifacts_core.models import ArtifactsInput, ArtifactsOutput
-from artifacts_manager.store.local_store import LocalStore
-from artifacts_manager.store.mlflow_store import MLflowStore
+from infrastructure.artifacts_manager.store.local_store import LocalStore
+from infrastructure.artifacts_manager.store.mlflow_store import MLflowStore
 
 
 class ArtifactManager(ArtifactManagerBase):

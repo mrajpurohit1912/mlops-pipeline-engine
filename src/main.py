@@ -9,8 +9,8 @@ from configuration.schema_validator.factory import SchemaValidatorFactory
 from application.orchestrator.orchestrator import PipelineOrchestrator
 from pipeline.tabular_classification_pipeline import TabularClassificationPipeline
 from runtime.bootstrap import RuntimeBootstrapper
-from artifacts_manager.artifact_manager import ArtifactManager
-from utils.dataset_manager.factory import DatasetManagerFactory
+from infrastructure.artifacts_manager.artifact_manager import ArtifactManager
+from application.factories.dataset_manager_factory import DatasetManagerFactory
 
 
 

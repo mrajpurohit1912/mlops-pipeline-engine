@@ -1,5 +1,5 @@
 from pathlib import Path
-from utils.dataset_manager.dataset_manager import (
+from infrastructure.dataset_manager.dataset_manager import (
     DatasetManagerTabular,
     DatasetManagerImage,
 )

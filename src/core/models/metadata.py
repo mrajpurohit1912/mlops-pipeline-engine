@@ -39,7 +39,7 @@ class TaskExecutionResult(BaseModel):
 
     metadata: BaseMetaData
     output: dict[str, Any] | None = None
-    #artifacts: dict[str, str] | None = None
+    artifacts: dict[str, str] | None = None
 
 
 class StageExecutionResult(BaseModel):

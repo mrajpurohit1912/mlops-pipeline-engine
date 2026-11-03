@@ -10,7 +10,7 @@ from core.models.metadata import (
     TaskExecutionResult,
 )
 from core.tasks.base import TaskBase
-from utils.dataset_manager.dto import DatasetSaveRequest
+from core.dataset_core.dto import DatasetSaveRequest
 
 
 

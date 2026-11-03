@@ -2,8 +2,8 @@ from configuration.schema.base_config_schema import Stage
 from configuration.schema.input_config_schema import MLConfig
 from core.stages.base import StageBase
 from core.stages.stages import DataIngestionStage, DataValidationStage
-from execution.data_ingestor.factory import DataIngestorFactory
-from execution.data_validation.factory import DataValidatorFactory
+from application.factories.data_ingestor_factory import DataIngestorFactory
+from application.factories.data_validator_factory import DataValidatorFactory
 
 
 class DAGGenerator:

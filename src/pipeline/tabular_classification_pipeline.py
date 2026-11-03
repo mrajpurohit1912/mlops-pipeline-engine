@@ -2,7 +2,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from configuration.configuration_engine import ConfigurationEngine
-from orchestrator.orchestrator import PipelineOrchestrator
+from application.orchestrator.orchestrator import PipelineOrchestrator
 
 
 class TabularClassificationPipeline:
