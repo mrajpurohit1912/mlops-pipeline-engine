@@ -21,6 +21,7 @@ logs/
 #Data and Models   
 data
 artifacts
+datastorage_artifacts
 
 #Jupyter
 notebooks
